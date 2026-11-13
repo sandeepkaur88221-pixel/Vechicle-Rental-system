@@ -1,0 +1,210 @@
+#include <iostream>
+#include <string>
+ble ? "Available" : "Rented")
+             << endl;
+    }using namespace std;
+
+class Vehicle
+{
+protected:
+    int id;
+    string name;
+    double rent;
+    bool available;
+
+public:
+    Vehicle(int i, string n, double r)
+    {
+        id = i;
+        name = n;
+        rent = r;
+        available = true;
+    }
+
+    virtual void display()
+    {
+        cout << id << "\t" << name << "\tRs. "
+             << rent << "\t"
+             << (available ? "Available" : "Rented")
+             << endl;
+    }
+
+    int getId()
+    {
+        return id;
+    }
+
+    bool isAvailable()
+    {
+        return available;
+    }
+
+    void rentVehicle()
+    {
+        available = false;
+    }
+
+    void returnVehicle()
+    {
+        available = true;
+    }
+
+    double calculateRent(int days)
+    {
+        return rent * days;
+    }
+
+    virtual ~Vehicle() {}
+};
+
+class Car : public Vehicle
+{
+public:
+    Car(int i, string n, double r)
+        : Vehicle(i, n, r) {}
+
+    void display() override
+    {
+        cout << id << "\tCar - " << name
+             << "\tRs. " << rent
+             << "\t" << (availa
+};
+
+class Bike : public Vehicle
+{
+public:
+    Bike(int i, string n, double r)
+        : Vehicle(i, n, r) {}
+
+    void display() override
+    {
+        cout << id << "\tBike - " << name
+             << "\tRs. " << rent
+             << "\t" << (available ? "Available" : "Rented")
+             << endl;
+    }
+};
+
+int main()
+{
+    Vehicle* vehicles[4];
+
+    vehicles[0] = new Car(1, "Swift", 2000);
+    vehicles[1] = new Car(2, "i20", 1800);
+    vehicles[2] = new Bike(3, "Honda", 500);
+    vehicles[3] = new Bike(4, "Royal Enfield", 1000);
+
+    int choice, id, days;
+    bool found;
+
+    do
+    {
+        cout << "\n===== VEHICLE RENTAL SYSTEM =====\n";
+        cout << "1. Display Vehicles\n";
+        cout << "2. Rent Vehicle\n";
+        cout << "3. Return Vehicle\n";
+        cout << "4. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice)
+        {
+        case 1:
+            cout << "\nID\tVehicle\t\tRent/Day\tStatus\n";
+
+            for (int i = 0; i < 4; i++)
+                vehicles[i]->display();
+
+            break;
+
+        case 2:
+            cout << "Enter Vehicle ID: ";
+            cin >> id;
+
+            found = false;
+
+            for (int i = 0; i < 4; i++)
+            {
+                if (vehicles[i]->getId() == id)
+                {
+                    found = true;
+
+                    if (vehicles[i]->isAvailable())
+                    {
+                        cout << "Enter rental days: ";
+                        cin >> days;
+
+                        if (days <= 0)
+                        {
+                            cout << "Invalid number of days!\n";
+                            break;
+                        }
+
+                        cout << "Total Rent: Rs. "
+                             << vehicles[i]->calculateRent(days)
+                             << endl;
+
+                        vehicles[i]->rentVehicle();
+
+                        cout << "Vehicle rented successfully!\n";
+                    }
+                    else
+                    {
+                        cout << "Vehicle is already rented!\n";
+                    }
+
+                    break;
+                }
+            }
+
+            if (!found)
+                cout << "Vehicle not found!\n";
+
+            break;
+
+        case 3:
+            cout << "Enter Vehicle ID: ";
+            cin >> id;
+
+            found = false;
+
+            for (int i = 0; i < 4; i++)
+            {
+                if (vehicles[i]->getId() == id)
+                {
+                    found = true;
+
+                    if (!vehicles[i]->isAvailable())
+                    {
+                        vehicles[i]->returnVehicle();
+                        cout << "Vehicle returned successfully!\n";
+                    }
+                    else
+                    {
+                        cout << "This vehicle was not rented.\n";
+                    }
+
+                    break;
+                }
+            }
+
+            if (!found)
+                cout << "Vehicle not found!\n";
+
+            break;
+
+        case 4:
+            cout << "Thank you for using the system!\n";
+            break;
+
+        default:
+            cout << "Invalid choice!\n";
+        }
+
+    } while (choice != 4);
+
+    for (int i = 0; i < 4; i++)
+        delete vehicles[i];
+
+    return 0;
+}
